@@ -11,18 +11,17 @@
 
 namespace KoolKode\Async\React;
 
-use KoolKode\Async\Test\AsyncTrait;
+use KoolKode\Async\Executor;
+use KoolKode\Async\Stream\SocketClosedException;
 use React\EventLoop\Timer\TimerInterface;
 use React\EventLoop\LoopInterface;
 use React\Stream\Stream;
 
 class ReactExecutorTest extends \PHPUnit_Framework_TestCase
 {
-    use AsyncTrait;
-
     public function testTimer()
     {
-        $executor = $this->createExecutor();
+        $executor = new Executor();
         $loop = new ReactLoopAdapter($executor);
         $done = false;
         
@@ -52,7 +51,7 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
     
     public function testPeriodicTimer()
     {
-        $loop = new ReactLoopAdapter($this->createExecutor());
+        $loop = new ReactLoopAdapter(new Executor());
         $i = 0;
     
         $callback = function (TimerInterface $timer) use(& $i) {
@@ -78,15 +77,15 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
     
     public function testReadStream()
     {
-        $loop = new ReactLoopAdapter($this->createExecutor());
+        $loop = new ReactLoopAdapter(new Executor());
         $this->assertEquals(0, $loop->__debugInfo()['readers']);
         
-        $fp = fopen(__FILE__, 'rb');
-        stream_set_blocking($fp, 0);
+        $in = fopen(__FILE__, 'rb');
+        stream_set_blocking($in, 0);
         
         $contents = '';
         
-        $loop->addReadStream($fp, function ($stream, LoopInterface $loop2) use($loop, & $contents) {
+        $loop->addReadStream($in, function ($stream, LoopInterface $loop2) use($loop, & $contents) {
             $this->assertSame($loop, $loop2);
             
             try {
@@ -105,21 +104,21 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(file_get_contents(__FILE__), $contents);
             $this->assertEquals(0, $loop->__debugInfo()['readers']);
         } finally {
-            @fclose($fp);
+            @fclose($in);
         }
     }
     
     public function testCanWriteStream()
     {
-        $loop = new ReactLoopAdapter($this->createExecutor());
+        $loop = new ReactLoopAdapter(new Executor());
         $this->assertEquals(0, $loop->__debugInfo()['writers']);
         
         $text = 'Lorem ipsum dolor etc. :)';
         
-        $fp = tmpfile();
-        stream_set_blocking($fp, 0);
+        $tmp = tmpfile();
+        stream_set_blocking($tmp, 0);
         
-        $loop->addWriteStream($fp, function ($stream, LoopInterface $loop2) use($loop, $text) {
+        $loop->addWriteStream($tmp, function ($stream, LoopInterface $loop2) use($loop, $text) {
             $this->assertSame($loop, $loop2);
             
             try {
@@ -134,18 +133,18 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
             $loop->run();
             $this->assertEquals(0, $loop->__debugInfo()['writers']);
             
-            stream_set_blocking($fp, 1);
-            rewind($fp);
+            stream_set_blocking($tmp, 1);
+            rewind($tmp);
             
-            $this->assertEquals($text, stream_get_contents($fp));
+            $this->assertEquals($text, stream_get_contents($tmp));
         } finally {
-            @fclose($fp);
+            @fclose($tmp);
         }
     }
     
     public function testNextTick()
     {
-        $loop = new ReactLoopAdapter($this->createExecutor());
+        $loop = new ReactLoopAdapter(new Executor());
         
         $i = 0;
         $tick = NULL;
@@ -170,7 +169,7 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
     
     public function testFutureTick()
     {
-        $loop = new ReactLoopAdapter($this->createExecutor());
+        $loop = new ReactLoopAdapter(new Executor());
         
         $ticks = 0;
         
@@ -197,15 +196,14 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
     
     public function testCanPipeStreams()
     {
-        $loop = new ReactLoopAdapter($this->createExecutor());
-        
-        $buffer = tmpfile();
+        $loop = new ReactLoopAdapter(new Executor());
+        $tmp = tmpfile();
         
         try {
             $in = new Stream(fopen(__FILE__, 'rb'), $loop);
             $in->bufferSize = filesize(__FILE__);
             
-            $out = new class($buffer, $loop) extends Stream {
+            $out = new class($tmp, $loop) extends Stream {
                 
                 public function handleClose()
                 {
@@ -215,15 +213,35 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
             
             $in->pipe($out);
             
-            $this->assertEquals(0, ftell($buffer));
+            $this->assertEquals(0, ftell($tmp));
             $loop->run();
             
-            stream_set_blocking($buffer, 1);
-            rewind($buffer);
+            stream_set_blocking($tmp, 1);
+            rewind($tmp);
             
-            $this->assertEquals(file_get_contents(__FILE__), stream_get_contents($buffer));
+            $this->assertEquals(file_get_contents(__FILE__), stream_get_contents($tmp));
         } finally {
-            @fclose($buffer);
+            @fclose($tmp);
+        }
+    }
+    
+    public function testWillCallPollListenerIfStreamIsClosedWhilePolling()
+    {
+        $executor = new Executor();
+        
+        $loop = new ReactLoopAdapter($executor);
+        $tmp = tmpfile();
+        
+        try {
+            $loop->addReadStream($tmp, function ($stream, LoopInterface $loop) {});
+            
+            @fclose($tmp);
+
+            $this->expectException(SocketClosedException::class);
+            
+            $loop->run();
+        } finally {
+            @fclose($tmp);
         }
     }
 }

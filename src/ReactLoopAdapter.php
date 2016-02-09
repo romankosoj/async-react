@@ -125,7 +125,7 @@ class ReactLoopAdapter implements LoopInterface
                 $this->loop = $loop;
             }
 
-            public function __invoke(ExecutorInterface $executor)
+            public function notify(ExecutorInterface $executor)
             {
                 ($this->listener)($this->stream, $this->loop);
             }
