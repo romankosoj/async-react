@@ -13,18 +13,11 @@ matrix:
     - php: 7.0
     - php: 7.0
       env: DEPS=--prefer-lowest
-    - php: 7.0
-      env: LOOP=ev
-  allow_failures:
-    - env: LOOP=ev
 
 before_install:
   - composer selfupdate --no-interaction
 
 install:
-  - openssl version
-  - if [[ "$LOOP" == "ev" ]]; then yes '' | pecl install ev-beta; fi
-  - yes '' | pecl install pthreads
   - travis_retry composer update --no-interaction --prefer-source $DEPS
   - composer info -i
 
