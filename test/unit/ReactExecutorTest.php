@@ -12,7 +12,7 @@
 namespace KoolKode\Async\React;
 
 use KoolKode\Async\Executor;
-use KoolKode\Async\Stream\SocketClosedException;
+use KoolKode\Async\PollException;
 use React\EventLoop\Timer\TimerInterface;
 use React\EventLoop\LoopInterface;
 use React\Stream\Stream;
@@ -237,8 +237,7 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
             
             @fclose($tmp);
 
-            $this->expectException(SocketClosedException::class);
-            
+            $this->expectException(PollException::class);
             $loop->run();
         } finally {
             @fclose($tmp);
