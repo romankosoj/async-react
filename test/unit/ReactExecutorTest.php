@@ -16,6 +16,9 @@ use KoolKode\Async\PollException;
 use React\EventLoop\Timer\TimerInterface;
 use React\EventLoop\LoopInterface;
 use React\Stream\Stream;
+use React\Promise\Deferred;
+use function KoolKode\Async\runCallback;
+use function KoolKode\Async\wait;
 
 class ReactExecutorTest extends \PHPUnit_Framework_TestCase
 {
@@ -242,5 +245,86 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
         } finally {
             @fclose($tmp);
         }
+    }
+    
+    public function testCanResolveReactPromise()
+    {
+        $executor = new Executor();
+        $result = NULL;
+        
+        $executor->runCallback(function () use (& $result) {
+            $deferred = new Deferred();
+            $promise = $deferred->promise();
+            
+            yield runCallback(function () use ($deferred) {
+                yield wait(.1);
+                
+                $deferred->resolve(123);
+            });
+            
+            $result = yield promise($promise);
+        });
+        
+        $executor->run();
+        
+        $this->assertEquals(123, $result);
+    }
+    
+    public function testNonPromiseValueIsReturnedAsIs()
+    {
+        $executor = new Executor();
+        $result = NULL;
+        
+        $executor->runCallback(function () use (& $result) {
+            $result = yield promise(1233);
+        });
+        
+        $executor->run();
+        
+        $this->assertEquals(123, $result);
+    }
+    
+    public function testCanRejectReactPromise()
+    {
+        $executor = new Executor();
+        
+        $executor->runCallback(function () {
+            $deferred = new Deferred();
+            $promise = $deferred->promise();
+            
+            yield runCallback(function () use ($deferred) {
+                yield wait(.1);
+                
+                $deferred->reject(new \LogicException('Rejected!'));
+            });
+            
+            $this->expectException(\LogicException::class);
+            
+            yield promise($promise);
+        });
+        
+        $executor->run();
+    }
+    
+    public function testRejectPromiseWrapsNonErrorsInRuntimeException()
+    {
+        $executor = new Executor();
+        
+        $executor->runCallback(function () {
+            $deferred = new Deferred();
+            $promise = $deferred->promise();
+            
+            yield runCallback(function () use ($deferred) {
+                yield wait(.1);
+                
+                $deferred->reject('Rejected!');
+            });
+            
+            $this->expectException(\RuntimeException::class);
+            
+            yield promise($promise);
+        });
+        
+        $executor->run();
     }
 }
