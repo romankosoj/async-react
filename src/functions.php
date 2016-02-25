@@ -17,7 +17,7 @@ use KoolKode\Async\Task;
 use React\Promise\PromiseInterface;
 
 /**
- * Resolves a react promise, assing an argument that is not a React promise will return the input value.
+ * Resolves a react promise, passing an argument that is not a React promise will return the input value.
  * 
  * Throws an exception into the task if the promise is rejected.
  * 
