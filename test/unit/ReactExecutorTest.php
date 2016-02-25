@@ -276,7 +276,7 @@ class ReactExecutorTest extends \PHPUnit_Framework_TestCase
         $result = NULL;
         
         $executor->runCallback(function () use (& $result) {
-            $result = yield promise(1233);
+            $result = yield promise(123);
         });
         
         $executor->run();
