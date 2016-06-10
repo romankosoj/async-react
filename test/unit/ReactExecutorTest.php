@@ -13,10 +13,11 @@ namespace KoolKode\Async\React;
 
 use KoolKode\Async\Executor;
 use KoolKode\Async\PollException;
-use React\EventLoop\Timer\TimerInterface;
 use React\EventLoop\LoopInterface;
-use React\Stream\Stream;
+use React\EventLoop\Timer\TimerInterface;
 use React\Promise\Deferred;
+use React\Stream\Stream;
+
 use function KoolKode\Async\runCallback;
 use function KoolKode\Async\wait;
 
