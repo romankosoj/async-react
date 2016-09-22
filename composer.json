@@ -18,7 +18,7 @@
 	"prefer-stable" : true,
 	"require" : {
 		"php" : "~7.0",
-		"koolkode/async" : "@dev",
+		"koolkode/async" : "^0.1.0",
 		"react/event-loop" : "~0.4"
 	},
 	"require-dev" : {
