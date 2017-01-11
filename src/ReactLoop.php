@@ -15,6 +15,7 @@ namespace KoolKode\Async\React;
 
 use AsyncInterop\Loop;
 use AsyncInterop\Loop\Driver;
+use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\Timer\Timer;
 use React\EventLoop\Timer\TimerInterface;
@@ -53,6 +54,11 @@ class ReactLoop implements LoopInterface
     public function isControllable(): bool
     {
         return $this->controllable;
+    }
+    
+    public function getResolver(): Resolver
+    {
+        return new ReactResolver();
     }
 
     /**
