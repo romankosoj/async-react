@@ -20,7 +20,7 @@ use React\Dns\Model\Message;
 /**
  * @covers \KoolKode\Async\React\ReactResolver
  */
-class ReactTest extends AsyncTestCase
+class ReactResolverTest extends AsyncTestCase
 {
     public function testCanResolveAddress()
     {
