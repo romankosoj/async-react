@@ -14,17 +14,15 @@
 			"email" : "m.schroeder2007@gmail.com"
 		}
 	],
-	"minimum-stability" : "dev",
-	"prefer-stable" : true,
+	"minimum-stability" : "stable",
 	"require" : {
 		"php" : "~7.0",
-		"koolkode/async" : "^0.1.0",
+		"koolkode/async" : "^0.2.12",
 		"react/event-loop" : "~0.4"
 	},
 	"require-dev" : {
-		"phpunit/phpunit" : "~5.4",
-		"react/stream" : "~0.4",
-		"react/promise" : "~2.0"
+		"phpunit/phpunit" : "^5.7.5",
+		"react/promise" : "~2.5"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -33,15 +31,8 @@
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"KoolKode\\Async\\React\\" : "test/src/"
-		},
-		"files" : [
-			"src/functions.php"
-		]
-	},
-	"extra" : {
-		"branch-alias" : {
-			"dev-master" : "0.1.x-dev"
+			"KoolKode\\Async\\React\\" : "test/src/",
+			"React\\Tests\\EventLoop\\" : "vendor/react/event-loop/tests/"
 		}
 	}
 }
