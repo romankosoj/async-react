@@ -23,7 +23,8 @@
 	"require-dev" : {
 		"phpunit/phpunit" : "^5.7.5",
 		"react/promise" : "~2.5",
-		"react/dns" : "^0.4.3"
+		"react/dns" : "^0.4.3",
+		"react/http-client" : "^0.4.15"
 	},
 	"autoload" : {
 		"psr-4" : {

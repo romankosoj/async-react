@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of KoolKode Async.
+ * This file is part of KoolKode Async React.
  *
  * (c) Martin Schröder <m.schroeder2007@gmail.com>
  *
