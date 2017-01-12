@@ -19,10 +19,10 @@ ini_set('display_errors', '1');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Create a React event loop backed by an async loop driver.
-$loop = new ReactLoop($driver = Loop::get());
-
-Loop::execute(function () use ($loop) {
+Loop::execute(function () {
+    // Create a React event loop backed by the executing interop loop driver.
+    $loop = new ReactLoop(Loop::get());
+    
     // Create a new HTTP client that uses the KoolKode DNS resolver.
     $client = (new Factory())->create($loop, $loop->getResolver());
     
@@ -46,4 +46,4 @@ Loop::execute(function () use ($loop) {
     });
     
     $request->end();
-}, $driver);
+});
