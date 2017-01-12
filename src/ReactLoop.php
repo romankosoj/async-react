@@ -51,11 +51,21 @@ class ReactLoop implements LoopInterface
         $this->timers = new \SplObjectStorage();
     }
 
+    /**
+     * Check if the loop can control the interop loop driver.
+     * 
+     * @return bool
+     */
     public function isControllable(): bool
     {
         return $this->controllable;
     }
     
+    /**
+     * Get a DNS resolver that implemets the public interface of the React DNS resolver.
+     * 
+     * @return Resolver
+     */
     public function getResolver(): Resolver
     {
         return new ReactResolver();

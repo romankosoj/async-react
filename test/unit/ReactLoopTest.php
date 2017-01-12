@@ -12,6 +12,7 @@
 namespace KoolKode\Async\React;
 
 use KoolKode\Async\Loop\NativeLoop;
+use React\Dns\Resolver\Resolver;
 use React\EventLoop\Timer\TimerInterface;
 use React\Tests\EventLoop\AbstractLoopTest;
 
@@ -42,6 +43,11 @@ class ReactLoopTest extends AbstractLoopTest
     public function testLoopIsControllable()
     {
         $this->assertTrue($this->createLoop()->isControllable());
+    }
+    
+    public function testLoopProvidesResolver()
+    {
+        $this->assertInstanceOf(Resolver::class, $this->createLoop()->getResolver());
     }
     
     public function provideControlMethods()

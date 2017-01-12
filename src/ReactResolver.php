@@ -58,11 +58,17 @@ class ReactResolver extends Resolver
         return $defer->promise();
     }
     
+    /**
+     * Method is not supported.
+     */
     public function extractAddress(Query $query, Message $response)
     {
         throw new \BadMethodCallException('Method not supported by KoolKode DNS resolver');
     }
     
+    /**
+     * Method is not supported.
+     */
     public function resolveAliases(array $answers, $name)
     {
         throw new \BadMethodCallException('Method not supported by KoolKode DNS resolver');
