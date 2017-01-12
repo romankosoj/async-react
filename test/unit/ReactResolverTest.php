@@ -11,6 +11,7 @@
 
 namespace KoolKode\Async\React;
 
+use KoolKode\Async\DNS\HostResolverProxy;
 use KoolKode\Async\Test\AsyncTestCase;
 use React\Dns\Query\CancellationException;
 use React\Dns\RecordNotFoundException;
@@ -24,14 +25,14 @@ class ReactResolverTest extends AsyncTestCase
 {
     public function testCanResolveAddress()
     {
-        $resolver = new ReactResolver();
+        $resolver = new ReactResolver(new HostResolverProxy());
         
         $this->assertEquals('127.0.0.1', yield new React($resolver->resolve('localhost')));
     }
 
     public function testWillNotResolveForUnknownHost()
     {
-        $resolver = new ReactResolver();
+        $resolver = new ReactResolver(new HostResolverProxy());
         
         $this->expectException(RecordNotFoundException::class);
         
@@ -40,7 +41,7 @@ class ReactResolverTest extends AsyncTestCase
 
     public function testCanCancelLookup()
     {
-        $resolver = new ReactResolver();
+        $resolver = new ReactResolver(new HostResolverProxy());
         
         $lookup = $resolver->resolve('google.com');
         $lookup->cancel();
@@ -52,7 +53,7 @@ class ReactResolverTest extends AsyncTestCase
 
     public function testCannotExtractAdress()
     {
-        $resolver = new ReactResolver();
+        $resolver = new ReactResolver(new HostResolverProxy());
         
         $this->expectException(\BadMethodCallException::class);
         
@@ -61,7 +62,7 @@ class ReactResolverTest extends AsyncTestCase
 
     public function testCannotResolveAliass()
     {
-        $resolver = new ReactResolver();
+        $resolver = new ReactResolver(new HostResolverProxy());
         
         $this->expectException(\BadMethodCallException::class);
         

@@ -15,6 +15,7 @@ namespace KoolKode\Async\React;
 
 use AsyncInterop\Loop;
 use AsyncInterop\Loop\Driver;
+use KoolKode\Async\DNS\HostResolverProxy;
 use React\Dns\Resolver\Resolver;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\Timer\Timer;
@@ -68,7 +69,7 @@ class ReactLoop implements LoopInterface
      */
     public function getResolver(): Resolver
     {
-        return new ReactResolver();
+        return new ReactResolver(new HostResolverProxy());
     }
 
     /**

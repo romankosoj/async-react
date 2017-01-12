@@ -13,7 +13,6 @@ declare(strict_types = 1);
 
 namespace KoolKode\Async\React;
 
-use KoolKode\Async\Context;
 use KoolKode\Async\DNS\Address;
 use KoolKode\Async\DNS\HostResolver;
 use React\Dns\Model\Message;
@@ -30,14 +29,29 @@ use React\Promise\Deferred;
  */
 class ReactResolver extends Resolver
 {
-    public function __construct() { }
+    /**
+     * DNS host resolver to be used.
+     * 
+     * @var HostResolver
+     */
+    protected $resolver;
+    
+    /**
+     * Create a new React DNS resolver backed by the given hst resolver.
+     * 
+     * @param HostResolver $resolver
+     */
+    public function __construct(HostResolver $resolver)
+    {
+        $this->resolver = $resolver;
+    }
 
     /**
      * {@inheritdoc}
      */
     public function resolve($domain)
     {
-        $lookup = Context::lookup(HostResolver::class)->resolve($domain);
+        $lookup = $this->resolver->resolve($domain);
         
         $defer = new Deferred(function (callable $resolve, callable $reject) use ($lookup, $domain) {
             $e = new CancellationException(\sprintf('DNS query for %s has been cancelled', $domain));
