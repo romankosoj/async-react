@@ -21,15 +21,6 @@ use React\Tests\EventLoop\AbstractLoopTest;
  */
 class ReactLoopTest extends AbstractLoopTest
 {
-    public function setUp()
-    {
-        if (extension_loaded('ev') || extension_loaded('event') || extension_loaded('uv')) {
-            return $this->markTestSkipped('React test cases rely on memory stream');
-        }
-        
-        parent::setUp();
-    }
-
     public function createLoop()
     {
         return new ReactLoop(new NativeLoop(), true);
