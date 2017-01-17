@@ -50,7 +50,7 @@ The KoolKode DNS resolver can be used from within React components. `ReactResolv
 
 ```php
 use AsyncInterop\Loop;
-use KoolKode\Async\React\React;
+use KoolKode\Async\React\ReactLoop;
 
 Loop::execute(function () {
     $loop = new ReactLoop(Loop::get());
