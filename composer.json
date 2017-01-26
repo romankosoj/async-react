@@ -17,7 +17,7 @@
 	"minimum-stability" : "stable",
 	"require" : {
 		"php" : "~7.0",
-		"koolkode/async" : "^0.2.13",
+		"koolkode/async" : "^0.3.0",
 		"react/event-loop" : "^0.4.2"
 	},
 	"require-dev" : {
