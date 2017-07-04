@@ -38,9 +38,17 @@ class ReactLoopTest extends AbstractLoopTest
     
     public function provideControlMethods()
     {
-        yield ['run'];
-        yield ['tick'];
-        yield ['stop'];
+        return [
+            [
+                'run'
+            ],
+            [
+                'tick'
+            ],
+            [
+                'stop'
+            ]
+        ];
     }
     
     /**
