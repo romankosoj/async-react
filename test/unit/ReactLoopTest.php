@@ -25,11 +25,6 @@ class ReactLoopTest extends AbstractLoopTest
     {
         return new ReactLoop(new NativeLoop(), true);
     }
-
-    protected function createCallableMock()
-    {
-        return $this->createMock('React\Tests\EventLoop\CallableStub');
-    }
     
     public function testLoopIsControllable()
     {

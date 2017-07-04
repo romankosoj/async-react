@@ -15,10 +15,10 @@ namespace KoolKode\Async\React;
 
 use KoolKode\Async\DNS\Address;
 use KoolKode\Async\DNS\HostResolver;
+use React\Dns\RecordNotFoundException;
 use React\Dns\Model\Message;
 use React\Dns\Query\CancellationException;
 use React\Dns\Query\Query;
-use React\Dns\RecordNotFoundException;
 use React\Dns\Resolver\Resolver;
 use React\Promise\Deferred;
 

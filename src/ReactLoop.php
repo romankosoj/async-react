@@ -77,13 +77,11 @@ class ReactLoop implements LoopInterface
      */
     public function addReadStream($stream, callable $listener)
     {
-        $this->readListeners[$key = (int) $stream][] = $listener;
-        
-        if (empty($this->readStreams[$key])) {
+        if (empty($this->readStreams[$key = (int) $stream])) {
+            $this->readListeners[$key] = $listener;
+            
             $this->readStreams[$key] = $this->driver->onReadable($stream, function ($id, $stream) use ($key) {
-                foreach ($this->readListeners[$key] as $listener) {
-                    $listener($stream, $this);
-                }
+                ($this->readListeners[$key])($stream, $this);
             });
         }
     }
@@ -93,13 +91,11 @@ class ReactLoop implements LoopInterface
      */
     public function addWriteStream($stream, callable $listener)
     {
-        $this->writeListeners[$key = (int) $stream][] = $listener;
-        
-        if (empty($this->writeStreams[$key])) {
+        if (empty($this->writeStreams[$key = (int) $stream])) {
+            $this->writeListeners[$key] = $listener;
+            
             $this->writeStreams[$key] = $this->driver->onWritable($stream, function ($id, $stream) use ($key) {
-                foreach ($this->writeListeners[$key] as $listener) {
-                    $listener($stream, $this);
-                }
+                ($this->writeListeners[$key])($stream, $this);
             });
         }
     }

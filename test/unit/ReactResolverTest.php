@@ -13,10 +13,10 @@ namespace KoolKode\Async\React;
 
 use KoolKode\Async\DNS\HostResolverProxy;
 use KoolKode\Async\Test\AsyncTestCase;
-use React\Dns\Query\CancellationException;
 use React\Dns\RecordNotFoundException;
-use React\Dns\Query\Query;
 use React\Dns\Model\Message;
+use React\Dns\Query\CancellationException;
+use React\Dns\Query\Query;
 
 /**
  * @covers \KoolKode\Async\React\ReactResolver
